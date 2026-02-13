@@ -1,0 +1,128 @@
+document.addEventListener('DOMContentLoaded', () => {
+
+    // --- NAVBAR SCROLL EFFECT ---
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // --- PARTICLE SYSTEM ---
+    const particlesContainer = document.getElementById('particles-container');
+    const particleCount = 40;
+
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.top = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 20 + 's';
+        particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+
+        // Random size for particles
+        const size = Math.random() * 3 + 2;
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+
+        particlesContainer.appendChild(particle);
+    }
+
+    // --- COUNTER ANIMATION ---
+    const stats = document.querySelectorAll('.stat-number');
+
+    const animateCounter = (el) => {
+        const target = parseInt(el.getAttribute('data-target'));
+        const duration = 2000;
+        const startTime = performance.now();
+
+        const update = (currentTime) => {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+
+            // Ease out expo
+            const easeValue = 1 - Math.pow(2, -10 * progress);
+            el.textContent = Math.floor(easeValue * target);
+
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            } else {
+                el.textContent = target + '+';
+            }
+        };
+
+        requestAnimationFrame(update);
+    };
+
+    // --- REVEAL ON SCROLL ---
+    const revealOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                if (entry.target.classList.contains('stat-number')) {
+                    animateCounter(entry.target);
+                } else {
+                    entry.target.style.animation = 'fade-in-up 0.8s forwards';
+                }
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, revealOptions);
+
+    // Elements to reveal
+    const revealElements = document.querySelectorAll('.service-card-flip, .about-image, .about-text, .cta-section, #formulario');
+    revealElements.forEach(el => {
+        el.style.opacity = '0';
+        revealObserver.observe(el);
+    });
+
+    stats.forEach(stat => revealObserver.observe(stat));
+
+    // --- SMOOTH SCROLL ---
+    const smoothLinks = document.querySelectorAll('a[href^="#"]');
+    smoothLinks.forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            const targetId = this.getAttribute('href');
+            if (targetId === '#' || !targetId.startsWith('#')) return;
+
+            const target = document.querySelector(targetId);
+            if (target) {
+                e.preventDefault();
+                const navHeight = document.getElementById('navbar') ? document.getElementById('navbar').offsetHeight : 0;
+                const targetPosition = target.getBoundingClientRect().top + window.scrollY - navHeight - 20;
+
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+
+                // Fail-safe: ensure target is revealed if it has opacity 0
+                if (getComputedStyle(target).opacity === '0') {
+                    target.style.animation = 'fade-in-up 0.8s forwards';
+                }
+            }
+        });
+    });
+
+    // --- MOBILE FLIP CARD TAP ---
+    const cards = document.querySelectorAll('.service-card-inner');
+    cards.forEach(card => {
+        card.addEventListener('click', () => {
+            // Check if mobile
+            if (window.innerWidth < 768) {
+                // If already flipped, unflip, else flip
+                if (card.style.transform === 'rotateY(180deg)') {
+                    card.style.transform = 'rotateY(0deg)';
+                } else {
+                    card.style.transform = 'rotateY(180deg)';
+                }
+            }
+        });
+    });
+});

@@ -358,6 +358,34 @@ h3 {
     transform: translateY(-9.5px) rotate(-45deg);
 }
 
+.nav-links {
+    display: flex;
+    gap: 32px;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    transition: var(--transition-normal);
+}
+
+.nav-link:hover {
+    color: var(--primary-400);
+}
+
+.nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-500);
+    transition: width 0.3s ease;
+}
+
 .mobile-only-btn {
     display: none;
 }
@@ -806,17 +834,19 @@ h3 {
         position: fixed;
         top: 0;
         right: -100%;
-        width: 80%;
+        width: 100%;
+        /* Cover full width for better experience */
         height: 100vh;
         background: rgba(9, 9, 11, 0.98);
         backdrop-filter: blur(20px);
+        display: flex;
+        /* Explicitly set flex */
         flex-direction: column;
         justify-content: center;
         align-items: center;
         gap: 40px;
         transition: right 0.5s cubic-bezier(0.16, 1, 0.3, 1);
         z-index: 1000;
-        box-shadow: -10px 0 30px rgba(0, 0, 0, 0.5);
     }
 
     .nav-links.active {

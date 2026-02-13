@@ -148,4 +148,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // --- WHATSAPP FORM SUBMISSION ---
+    const whatsappForm = document.getElementById('whatsappForm');
+    if (whatsappForm) {
+        whatsappForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const message = document.getElementById('message').value;
+
+            const phoneNumber = '573054557046';
+            const text = `Hola Flor Milena, soy ${name}. Deseo agendar una sesión de regresión.\n\nMi correo: ${email}\nMi teléfono: ${phone}\nConsulta: ${message}`;
+
+            const encodedText = encodeURIComponent(text);
+            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
+
+            window.open(whatsappUrl, '_blank');
+        });
+    }
 });

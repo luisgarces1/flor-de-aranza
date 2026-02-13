@@ -129,6 +129,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (getComputedStyle(target).opacity === '0') {
                     target.style.animation = 'fade-in-up 0.8s forwards';
                 }
+
+                // Focus name field if targeting form
+                if (targetId === '#formulario') {
+                    const nameInput = document.getElementById('name');
+                    if (nameInput) setTimeout(() => nameInput.focus(), 600);
+                }
             }
         });
     });

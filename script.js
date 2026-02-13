@@ -155,10 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- WHATSAPP FORM SUBMISSION ---
+    // --- FORM SUBMISSION (WEBHOOK + WHATSAPP) ---
     const whatsappForm = document.getElementById('whatsappForm');
     if (whatsappForm) {
-        whatsappForm.addEventListener('submit', (e) => {
+        whatsappForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const name = document.getElementById('name').value;
@@ -166,13 +166,44 @@ document.addEventListener('DOMContentLoaded', () => {
             const phone = document.getElementById('phone').value;
             const message = document.getElementById('message').value;
 
+            const submitBtn = whatsappForm.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.textContent;
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Enviando...';
+
+            const formData = {
+                nombre: name,
+                email: email,
+                telefono: phone,
+                mensaje: message,
+                fecha: new Date().toLocaleString(),
+                sitio: 'Flor de Arantza'
+            };
+
+            try {
+                // Send to n8n Webhook
+                await fetch('https://n8n-production-e7a7c.up.railway.app/webhook/7cf3b994-a850-4c9b-9984-4118c6f58663', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+            } catch (error) {
+                console.error('Error al enviar al webhook:', error);
+            }
+
+            // WhatsApp Redirection
             const phoneNumber = '573054557046';
             const text = `Hola Flor Milena, soy ${name}. Deseo agendar una sesión de regresión.\n\nMi correo: ${email}\nMi teléfono: ${phone}\nConsulta: ${message}`;
-
             const encodedText = encodeURIComponent(text);
             const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
 
             window.open(whatsappUrl, '_blank');
+
+            // Reset button
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalBtnText;
         });
     }
 });

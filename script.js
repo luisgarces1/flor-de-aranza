@@ -155,10 +155,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // --- FORM SUBMISSION (WEBHOOK + WHATSAPP) ---
-    const whatsappForm = document.getElementById('whatsappForm');
-    if (whatsappForm) {
-        whatsappForm.addEventListener('submit', async (e) => {
+    // --- FORM SUBMISSION (WEBHOOK) ---
+    const contactForm = document.getElementById('whatsappForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
 
             const name = document.getElementById('name').value;
@@ -189,17 +189,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify(formData)
                 });
+
+                // Success feedback
+                alert('¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.');
+                contactForm.reset();
             } catch (error) {
-                console.error('Error al enviar al webhook:', error);
+                console.error('Error al enviar al formulario:', error);
+                alert('Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.');
             }
-
-            // WhatsApp Redirection
-            const phoneNumber = '573054557046';
-            const text = `Hola Flor Milena, soy ${name}. Deseo agendar una sesión de regresión.\n\nMi correo: ${email}\nMi teléfono: ${phone}\nConsulta: ${message}`;
-            const encodedText = encodeURIComponent(text);
-            const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodedText}`;
-
-            window.open(whatsappUrl, '_blank');
 
             // Reset button
             submitBtn.disabled = false;

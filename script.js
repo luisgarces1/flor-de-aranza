@@ -155,6 +155,34 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // --- CUSTOM MODAL LOGIC ---
+    const customModal = document.getElementById('customModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalMessage = document.getElementById('modalMessage');
+    const closeModal = document.getElementById('closeModal');
+
+    const showModal = (title, message, icon = '✨') => {
+        modalTitle.textContent = title;
+        modalMessage.textContent = message;
+        customModal.querySelector('.modal-icon').textContent = icon;
+        customModal.classList.add('active');
+        body.style.overflow = 'hidden';
+    };
+
+    const hideModal = () => {
+        customModal.classList.remove('active');
+        body.style.overflow = '';
+    };
+
+    if (closeModal) {
+        closeModal.addEventListener('click', hideModal);
+    }
+
+    // Close on overlay click
+    customModal.addEventListener('click', (e) => {
+        if (e.target === customModal) hideModal();
+    });
+
     // --- FORM SUBMISSION (WEBHOOK) ---
     const contactForm = document.getElementById('whatsappForm');
     if (contactForm) {
@@ -166,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const phone = document.getElementById('phone').value;
             const message = document.getElementById('message').value;
 
-            const submitBtn = whatsappForm.querySelector('button[type="submit"]');
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
             const originalBtnText = submitBtn.textContent;
             submitBtn.disabled = true;
             submitBtn.textContent = 'Enviando...';
@@ -191,11 +219,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
 
                 // Success feedback
-                alert('¡Mensaje enviado con éxito! Nos pondremos en contacto contigo pronto.');
+                showModal('¡Mensaje Enviado!', 'Nos pondremos en contacto contigo pronto. ✨', '✅');
                 contactForm.reset();
             } catch (error) {
                 console.error('Error al enviar al formulario:', error);
-                alert('Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.');
+                showModal('Error', 'Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.', '❌');
             }
 
             // Reset button

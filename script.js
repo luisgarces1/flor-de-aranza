@@ -178,10 +178,28 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal.addEventListener('click', hideModal);
     }
 
-    // Close on overlay click
-    customModal.addEventListener('click', (e) => {
-        if (e.target === customModal) hideModal();
-    });
+    if (customModal) {
+        customModal.addEventListener('click', (e) => {
+            if (e.target === customModal) hideModal();
+        });
+    }
+
+    // --- PHONE PREFIX LOGIC ---
+    const countryCodeSelect = document.getElementById('countryCode');
+    const currentFlag = document.getElementById('currentFlag');
+    const currentPrefix = document.getElementById('currentPrefix');
+
+    if (countryCodeSelect && currentFlag && currentPrefix) {
+        countryCodeSelect.addEventListener('change', () => {
+            const selectedOption = countryCodeSelect.options[countryCodeSelect.selectedIndex];
+            const flagCode = selectedOption.getAttribute('data-flag');
+            const prefix = selectedOption.value;
+
+            currentFlag.src = `https://flagcdn.com/w20/${flagCode}.png`;
+            currentFlag.alt = flagCode.toUpperCase();
+            currentPrefix.textContent = prefix;
+        });
+    }
 
     // --- FORM SUBMISSION (WEBHOOK) ---
     const contactForm = document.getElementById('whatsappForm');
@@ -191,7 +209,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const name = document.getElementById('name').value;
             const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
+            const phonePrefix = document.getElementById('countryCode').value;
+            const phoneNumber = document.getElementById('phone').value;
+            const phone = `${phonePrefix} ${phoneNumber}`;
             const message = document.getElementById('message').value;
 
             const submitBtn = contactForm.querySelector('button[type="submit"]');

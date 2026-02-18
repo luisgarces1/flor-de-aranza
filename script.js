@@ -211,7 +211,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = document.getElementById('email').value;
             const phonePrefix = document.getElementById('countryCode').value;
             const phoneNumber = document.getElementById('phone').value;
-            const phone = `${phonePrefix} ${phoneNumber}`;
+
+            // Eliminar caracteres no numéricos (como el '+' y espacios) para evitar errores en Google Sheets
+            const cleanPhone = (phonePrefix + phoneNumber).replace(/\D/g, '');
+            const phone = cleanPhone;
+
             const message = document.getElementById('message').value;
 
             const submitBtn = contactForm.querySelector('button[type="submit"]');
